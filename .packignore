@@ -1,0 +1,4 @@
+# This is the ignore file for the pack script that builds the zip for AWS
+package-lock.json
+README.md
+dist
