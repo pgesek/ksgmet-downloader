@@ -5,7 +5,8 @@
   "main": "src/index.js",
   "scripts": {
     "build-aws-resource": "mkdir -p dist && pack-zip && mv *.zip dist",
-    "build-aws-resource-win": "if not exist dist mkdir dist && pack-zip && move *.zip dist"
+    "build-aws-resource-win": "if not exist dist mkdir dist && pack-zip && move *.zip dist",
+    "test": "jasmine spec/*_spec.js"
   },
   "author": "Paweł Gesek",
   "license": "MIT",
@@ -13,7 +14,8 @@
     "eslint": "^5.6.1",
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-plugin-import": "^2.14.0",
-    "pack-zip": "^0.2.2"
+    "pack-zip": "^0.2.2",
+    "jasmine": "^3.2.0"
   },
   "dependencies": {}
 }

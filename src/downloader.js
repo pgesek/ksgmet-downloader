@@ -1,5 +1,3 @@
-'use strict';
-
 class Downloader {
 
     download() {
