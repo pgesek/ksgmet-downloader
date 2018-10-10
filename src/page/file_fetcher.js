@@ -12,7 +12,13 @@ class FileFetcher {
     }
 
     static fetchAndExec(url, callback) {
-        http.get(url, callback);
+        http.get(url, response => {
+            if (response.statusCode !== 200) {
+                throw `Respone ${response.statusCode} while fetching ${url}`;
+            }
+            
+            callback(response);
+        });
     }
 }
 

@@ -17,5 +17,7 @@
     "pack-zip": "^0.2.2",
     "jasmine": "^3.2.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "cherio": "1.0.0-rc.2"
+  }
 }
