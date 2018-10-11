@@ -1,9 +1,9 @@
-const http = require('http');
+const fetch = require('node-fetch');
 
 class FileFetcher {
     static fetchAndSave(url, file) {
-        this.fetchAndExec(url, function(response) {
-            if (response.statusCode !== 200) {
+        this.fetchAndExec(url, response => {
+            if (response.status !== 200) {
                 throw `Respone ${response.statusCode} while fetching ${url}`;
             }
 
@@ -12,13 +12,16 @@ class FileFetcher {
     }
 
     static fetchAndExec(url, callback) {
-        http.get(url, response => {
-            if (response.statusCode !== 200) {
-                throw `Respone ${response.statusCode} while fetching ${url}`;
+        console.log("Fetching: " + url);
+        fetch(url)
+        .then(response => {
+            if (response.status !== 200) {
+                throw `Response ${response.status} while fetching ${url}`;
             }
             
             callback(response);
-        });
+        })
+        .catch(err => { throw err });
     }
 }
 

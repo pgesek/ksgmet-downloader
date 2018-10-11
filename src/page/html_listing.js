@@ -6,12 +6,22 @@ class HtmlListing {
     }
 
     getLastNumericHrefVal() {
-        let href = this.$('a').last().text();
-        if (href) {
-            href = href.replace(/\//, '');
-        }
-        return isNaN(href) ? undefined : href; 
-    }    
+        let href = this.$('a')
+            .filter(this.numericHrefFilter.bind(this))
+            .last()
+            .text();
+        return this.dropSlash(href); 
+    }   
+
+    numericHrefFilter(index, element) {
+        let text = element.lastChild.nodeValue;
+        text = this.dropSlash(text);
+        return text && !isNaN(text);
+    }
+
+    dropSlash(value) {
+        return value ? value.replace(/\//, '') : value;
+    }
 }
 
 module.exports = HtmlListing;

@@ -1,7 +1,7 @@
 const FileFetcher = require("./file_fetcher.js");  
 const FetchDate = require("./fetch_date.js");  
 const HtmlListing = require("./html_listing.js");  
-const url = require('url');
+const UrlUtil = require('../util/url_util.js');
 
 class LatestDateRetriever {
     
@@ -17,8 +17,8 @@ class LatestDateRetriever {
     retrievePart(fetchDate, callback) {
         const fetchUrl = this.buildUrl(fetchDate);
         FileFetcher.fetchAndExec(fetchUrl, response => {
-            response.on('data', chunk => {
-                const listing = new HtmlListing(chunk);
+            response.text().then(body => {
+                const listing = new HtmlListing(body);
                 const part = listing.getLastNumericHrefVal();
 
                 if (!part) {
@@ -38,7 +38,7 @@ class LatestDateRetriever {
     }
 
     buildUrl(fetchDate) {
-        return url.resolve(this.baseUrl, fetchDate.toPath());
+        return UrlUtil.buildUrl(this.baseUrl, fetchDate.toPath());
     }
 }
 
