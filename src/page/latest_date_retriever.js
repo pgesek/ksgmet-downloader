@@ -9,30 +9,38 @@ class LatestDateRetriever {
         this.baseUrl = baseUrl;
     }
 
-    retrieveLatestDate(callback) {
+    retrieveLatestDate() {
         const fetchDate = new FetchDate();
-        this.retrievePart(fetchDate, callback);
+        return new Promise((resolve, reject) => {
+            this.retrievePart(fetchDate)
+                .then(date => resolve(date))
+                .catch(err => reject(err));
+        });
     }
 
-    retrievePart(fetchDate, callback) {
+    retrievePart(fetchDate) {
         const fetchUrl = this.buildUrl(fetchDate);
-        FileFetcher.fetchAndExec(fetchUrl, response => {
-            response.text().then(body => {
-                const listing = new HtmlListing(body);
-                const part = listing.getLastNumericHrefVal();
+        return new Promise((resolve, reject) => {
+            FileFetcher.fetchAndExec(fetchUrl, response => {
+                response.text().then(body => {
+                    const listing = new HtmlListing(body);
+                    const part = listing.getLastNumericHrefVal();
 
-                if (!part) {
-                    throw "Unable to retrieve latest path. Stopped at " +
-                        fetchDate.toPath();
-                }
+                    if (!part) {
+                        reject("Unable to retrieve latest path. Stopped at " +
+                            fetchDate.toPath());
+                    }
 
-                fetchDate.addNextPart(part);
+                    fetchDate.addNextPart(part);
 
-                if (fetchDate.isComplete()) {
-                    callback(fetchDate);
-                } else {
-                    this.retrievePart(fetchDate, callback);
-                }
+                    if (fetchDate.isComplete()) {
+                        resolve(fetchDate);
+                    } else {
+                        this.retrievePart(fetchDate)
+                            .then(date => resolve(date))
+                            .catch(err => reject(err));
+                    }
+                });
             });
         });
     }
