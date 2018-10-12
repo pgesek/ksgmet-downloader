@@ -21,28 +21,33 @@ class LatestDateRetriever {
     retrievePart(fetchDate) {
         const fetchUrl = this.buildUrl(fetchDate);
         return new Promise((resolve, reject) => {
-            FileFetcher.fetchAndExec(fetchUrl, response => {
+            FileFetcher.fetchAndExec(fetchUrl).then(response => {
                 response.text().then(body => {
-                    const listing = new HtmlListing(body);
-                    const part = listing.getLastNumericHrefVal();
-
-                    if (!part) {
-                        reject("Unable to retrieve latest path. Stopped at " +
-                            fetchDate.toPath());
-                    }
-
-                    fetchDate.addNextPart(part);
-
-                    if (fetchDate.isComplete()) {
-                        resolve(fetchDate);
-                    } else {
-                        this.retrievePart(fetchDate)
-                            .then(date => resolve(date))
-                            .catch(err => reject(err));
-                    }
+                    this.handleListingResponse(body, fetchDate,
+                        resolve, reject);
                 });
-            });
+            }).catch(err => reject(err));
         });
+    }
+
+    handleListingResponse(body, fetchDate, resolve, reject) {
+        const listing = new HtmlListing(body);
+        const part = listing.getLastNumericHrefVal();
+
+        if (!part) {
+            reject("Unable to retrieve latest path. Stopped at " +
+                fetchDate.toPath());
+        }
+
+        fetchDate.addNextPart(part);
+
+        if (fetchDate.isComplete()) {
+            resolve(fetchDate);
+        } else {
+            this.retrievePart(fetchDate)
+                .then(date => resolve(date))
+                .catch(err => reject(err));
+        }
     }
 
     buildUrl(fetchDate) {
