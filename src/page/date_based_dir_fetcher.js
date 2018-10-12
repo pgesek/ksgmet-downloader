@@ -7,10 +7,9 @@ class DateBasedDirFetcher {
         this.latestDateRetriever = new LatestDateRetriever(dirUrl);
     }
 
-    fetchDirectory() {
-        this.latestDateRetriever.retrieveLatestDate(date => {
-            
-        });
+    async fetchDirectory() {
+        const fetchDate = await this.latestDateRetriever.retrieveLatestDate();
+        
     }
 }
 

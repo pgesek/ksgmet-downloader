@@ -7,19 +7,33 @@ class HtmlListing {
 
     getLastNumericHrefVal() {
         let href = this.$('a')
-            .filter(this.numericHrefFilter.bind(this))
+            .filter(this._numericHrefFilter.bind(this))
             .last()
             .text();
-        return this.dropSlash(href); 
+        return this._dropSlash(href); 
     }   
 
-    numericHrefFilter(index, element) {
-        let text = element.lastChild.nodeValue;
-        text = this.dropSlash(text);
-        return text && !isNaN(text);
+    getAllFileNames() {
+        return this.$('a')
+            .filter(this._hrefNotSpecialFilter.bind(this))
+            .map(function(index, element) {
+                return element.attribs.href;
+            }).toArray();
     }
 
-    dropSlash(value) {
+    _numericHrefFilter(index, element) {
+        let text = element.lastChild.nodeValue;
+        text = this._dropSlash(text);
+        return text && !isNaN(text);
+    }
+    
+    _hrefNotSpecialFilter(index, element) {
+        const href = element.attribs.href;
+        return href && !href.startsWith('/') && 
+            !href.startsWith('?');
+    }
+
+    _dropSlash(value) {
         return value ? value.replace(/\//, '') : value;
     }
 }

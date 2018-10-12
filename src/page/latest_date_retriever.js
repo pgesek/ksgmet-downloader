@@ -12,25 +12,25 @@ class LatestDateRetriever {
     retrieveLatestDate() {
         const fetchDate = new FetchDate();
         return new Promise((resolve, reject) => {
-            this.retrievePart(fetchDate)
+            this._retrievePart(fetchDate)
                 .then(date => resolve(date))
                 .catch(err => reject(err));
         });
     }
 
-    retrievePart(fetchDate) {
-        const fetchUrl = this.buildUrl(fetchDate);
+    _retrievePart(fetchDate) {
+        const fetchUrl = this._buildUrl(fetchDate);
         return new Promise((resolve, reject) => {
             FileFetcher.fetchAndExec(fetchUrl).then(response => {
                 response.text().then(body => {
-                    this.handleListingResponse(body, fetchDate,
+                    this._handleListingResponse(body, fetchDate,
                         resolve, reject);
                 });
             }).catch(err => reject(err));
         });
     }
 
-    handleListingResponse(body, fetchDate, resolve, reject) {
+    _handleListingResponse(body, fetchDate, resolve, reject) {
         const listing = new HtmlListing(body);
         const part = listing.getLastNumericHrefVal();
 
@@ -44,13 +44,13 @@ class LatestDateRetriever {
         if (fetchDate.isComplete()) {
             resolve(fetchDate);
         } else {
-            this.retrievePart(fetchDate)
+            this._retrievePart(fetchDate)
                 .then(date => resolve(date))
                 .catch(err => reject(err));
         }
     }
 
-    buildUrl(fetchDate) {
+    _buildUrl(fetchDate) {
         return UrlUtil.buildUrl(this.baseUrl, fetchDate.toPath());
     }
 }

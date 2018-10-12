@@ -34,4 +34,21 @@ describe('page parser', () => {
             done();
         });
     });
+
+    it('should return all non special file names', done => {
+        fs.readFile("spec/data/file_listing.html", "utf8", (err, data) => {
+            if (err) throw err;
+  
+            const fileNames = [
+                'ACM_CONVECTIVE_PERCIP.csv',
+                'ACM_CONVECTIVE_PERCIP.csv.jpg',
+                'ACM_CONVECTIVE_PERCIP_LOCAL_MAX.csv'
+            ];
+
+            const listing = new HtmlListing(data);
+            expect(listing.getAllFileNames()).toEqual(fileNames);
+
+            done();
+        });
+    });
 });
