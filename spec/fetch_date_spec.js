@@ -45,4 +45,14 @@ describe('fetch date', () => {
         expect(() => fetchDate.addNextPart('1'))
             .toThrow('This date is already complete');
     });
+
+    it('should decrement', () => {
+        let date = new FetchDate('2018', '3', '1', '0');
+        date.decrement();
+        expect(date.toPath()).toEqual('2018/2/28/23/');
+
+        date = new FetchDate('2017', '4', '10', '22');
+        date.decrement();
+        expect(date.toPath()).toEqual('2017/4/10/21/');
+    });
 });

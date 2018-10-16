@@ -21,7 +21,7 @@ class LatestDateRetriever {
     _retrievePart(fetchDate) {
         const fetchUrl = this._buildUrl(fetchDate);
         return new Promise((resolve, reject) => {
-            FileFetcher.fetchAndExec(fetchUrl).then(response => {
+            FileFetcher.fetch(fetchUrl).then(response => {
                 response.text().then(body => {
                     this._handleListingResponse(body, fetchDate,
                         resolve, reject);

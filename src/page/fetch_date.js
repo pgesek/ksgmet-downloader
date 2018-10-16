@@ -1,5 +1,12 @@
 class FetchDate {
 
+    constructor(year, month, day, hour) {
+        this.year = year;
+        this.month = month;
+        this.day = day;
+        this.hour = hour;
+    }
+
     addNextPart(part) {
         if (!this.year) {
             this.year = part;
@@ -38,6 +45,17 @@ class FetchDate {
 
     isDef(val) {
         return typeof val !== 'undefined';
+    }
+
+    decrement() {
+        const dt = new Date(this.year, this.month - 1, this.day, 
+            this.hour);
+        dt.setHours(dt.getHours() - 1);
+
+        this.year = dt.getFullYear();
+        this.month = dt.getMonth() + 1;
+        this.day = dt.getDate();
+        this.hour = dt.getHours();
     }
 }
 

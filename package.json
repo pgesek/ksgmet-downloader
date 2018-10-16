@@ -20,6 +20,10 @@
   },
   "dependencies": {
     "cherio": "1.0.0-rc.2",
-    "node-fetch": "^2.2.0"
+    "fstream": "^1.0.11",
+    "mkdir-recursive": "^0.4.0",
+    "moment-timezone": "0.5.21",
+    "node-fetch": "^2.2.0",
+    "targz": "^1.0.1"
   }
 }

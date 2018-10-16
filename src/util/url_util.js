@@ -1,11 +1,20 @@
 const url = require('url');
 
 class UrlUtil {
-    static buildUrl(base, path) {
+    static buildUrl(base, path, file = null) {
         const baseParsed = base.endsWith('/') ? 
             base : base + '/';
         
-        return url.resolve(baseParsed, path);
+        let joinedUrl = url.resolve(baseParsed, path);
+
+        if (file) {
+            if (!joinedUrl.endsWith('/')) {
+                joinedUrl += '/';
+            }
+            joinedUrl = url.resolve(joinedUrl, file);
+        }
+
+        return joinedUrl;
     }
 }
 

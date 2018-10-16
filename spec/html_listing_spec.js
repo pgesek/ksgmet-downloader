@@ -51,4 +51,27 @@ describe('page parser', () => {
             done();
         });
     });
+
+    it('should return null as first for empty listing', done => {
+        fs.readFile("spec/data/empty_listing.html", "utf8", (err, data) => {
+            if (err) throw err;
+  
+            const listing = new HtmlListing(data);
+            expect(listing.getFirstFileName()).toBeNull();
+
+            done();
+        });
+    });
+
+    it('should return first file names', done => {
+        fs.readFile("spec/data/file_listing.html", "utf8", (err, data) => {
+            if (err) throw err;
+
+            const listing = new HtmlListing(data);
+            expect(listing.getFirstFileName())
+                .toEqual('ACM_CONVECTIVE_PERCIP.csv');
+
+            done();
+        });
+    });
 });

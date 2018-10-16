@@ -1,8 +1,9 @@
 const cherio = require('cherio');
 
 class HtmlListing {
-    constructor(content) {
+    constructor(content, path) {
         this.$ = cherio.load(content);
+        this.fetchDate = path;
     }
 
     getLastNumericHrefVal() {
@@ -19,6 +20,16 @@ class HtmlListing {
             .map(function(index, element) {
                 return element.attribs.href;
             }).toArray();
+    }
+
+    getFirstFileName() {
+        const filenames = this.getAllFileNames();
+        return filenames && filenames.length > 0 ? 
+            filenames[0] : null;
+    }
+
+    getPath() {
+        return this.path;
     }
 
     _numericHrefFilter(index, element) {

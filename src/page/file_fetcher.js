@@ -2,10 +2,10 @@ const fetch = require('node-fetch');
 
 class FileFetcher {
 
-    static fetchAndExec(url, callback) {
-        console.log('Fetching: ' + url);
+    static fetch(url, method = 'GET') {
+        console.log(`Fetching ${url} using ${method}`);
         return new Promise((resolve, reject) => {
-            fetch(url).then(response => {
+            fetch(url, {method}).then(response => {
                 console.log('Response status: ' + response.status);
                 if (response.status !== 200) {
                     throw `Response ${response.status} while fetching ${url}`;
