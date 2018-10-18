@@ -9,7 +9,7 @@ beforeEach(done => mockServer.start(done));
 afterEach(done => mockServer.stop(done));
 
 describe('Directory Fetcher', () => {
-    it('should fetch directory', async done => {
+    it('should fetch directory', async () => {
         const baseUrl = 'http://localhost:9700/CSV/poland';
         const store = { save: function() {
             console.log('Saving');
@@ -27,7 +27,5 @@ describe('Directory Fetcher', () => {
         expect(store.save).toHaveBeenCalledWith('2018/10/13/12/', 'WVC.csv', jasmine.any(String));
         expect(store.save).toHaveBeenCalledWith('2018/10/13/11/', 'modified_dates.json', jasmine.any(String));
         expect(store.save).toHaveBeenCalledWith('2018/10/13/12/', 'modified_dates.json', jasmine.any(String));
-
-        done();
     });
 });
