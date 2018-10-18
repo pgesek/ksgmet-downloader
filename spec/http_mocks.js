@@ -1,23 +1,41 @@
-fs = require('fs');
+const fs = require('fs');
 
 class HttpMocks {
-    static async mockCsvPoland2018(mockServer) {
+    static mockCsvPoland2018(mockServer) {
         this.mockIndex(mockServer, '/CSV/poland/');
         this.mockIndex(mockServer, '/CSV/poland/2018/');
         this.mockFile(mockServer, '/CSV/poland/2018/current.nfo');
         this.mockIndex(mockServer, '/CSV/poland/2018/10/');
         this.mockIndex(mockServer, '/CSV/poland/2018/10/13/');
         this.mockIndex(mockServer, '/CSV/poland/2018/10/13/12/');
+        this.mockFile(mockServer, '/CSV/poland/2018/10/13/12/ACM_CONVECTIVE_PERCIP.csv');
+        this.mockFile(mockServer, '/CSV/poland/2018/10/13/12/ACM_CONVECTIVE_PERCIP.csv.jpg');
+        this.mockFile(mockServer, '/CSV/poland/2018/10/13/12/WVC.csv');
+        this.mockIndex(mockServer, '/CSV/poland/2018/10/13/11/');
+        this.mockFile(mockServer, '/CSV/poland/2018/10/13/11/testfile.csv');
     }
 
-    static async mockIndex(mockServer, path) {
-        await mockServer.get(path)
-            .thenReply(200, this.readFile(path + 'index.html'));    
+    static mockIndex(mockServer, path) {
+        mockServer.on({
+            method: 'GET',
+            path: path,
+            reply: {
+                status: 200,
+                body: this.readFile(path + 'index.html')
+            }
+        });    
     }
 
-    static async mockFile(mockServer, path) {
-        await mockServer.get(path)
-            .thenReply(200, this.readFile(path));    
+    static mockFile(mockServer, path, lastModDate) {
+        mockServer.on({
+            method: 'GET',
+            path: path,
+            reply: {
+                status: 200,
+                headers: { 'Last-Modified': lastModDate},
+                body: this.readFile(path)
+            }
+        });
     }
 
     static readFile(path) {

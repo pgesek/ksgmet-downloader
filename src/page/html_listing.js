@@ -3,7 +3,7 @@ const cherio = require('cherio');
 class HtmlListing {
     constructor(content, path) {
         this.$ = cherio.load(content);
-        this.fetchDate = path;
+        this.path = path;
     }
 
     getLastNumericHrefVal() {

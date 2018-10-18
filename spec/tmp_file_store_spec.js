@@ -1,6 +1,7 @@
 const TmpFileStore = require('../src/persistence/tmp_file_store.js');
 const os = require('os');
 const path = require('path');
+const fs = require('fs');
 
 describe('tmp file store', () => {
     it('should create a temp file', done => {

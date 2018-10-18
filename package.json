@@ -16,7 +16,7 @@
     "eslint-plugin-import": "^2.14.0",
     "pack-zip": "^0.2.2",
     "jasmine": "^3.2.0",
-    "mockttp": "^0.10.0"
+    "mock-http-server": "^1.0.0"
   },
   "dependencies": {
     "cherio": "1.0.0-rc.2",
