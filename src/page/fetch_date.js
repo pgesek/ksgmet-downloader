@@ -57,6 +57,10 @@ class FetchDate {
         this.day = dt.getDate();
         this.hour = dt.getHours();
     }
+
+    getYear() {
+        return this.year;
+    }
 }
 
 module.exports = FetchDate;

@@ -27,5 +27,6 @@ describe('Directory Fetcher', () => {
         expect(store.save).toHaveBeenCalledWith('2018/10/13/12/', 'WVC.csv', jasmine.any(String));
         expect(store.save).toHaveBeenCalledWith('2018/10/13/11/', 'modified_dates.json', jasmine.any(String));
         expect(store.save).toHaveBeenCalledWith('2018/10/13/12/', 'modified_dates.json', jasmine.any(String));
+        expect(store.save).toHaveBeenCalledWith('2018/', 'current.nfo', jasmine.any(String));
     });
 });

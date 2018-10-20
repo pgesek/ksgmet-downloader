@@ -5,6 +5,7 @@ const UrlUtil = require('../util/url_util.js');
 const FileFetcher = require("./file_fetcher.js");  
 
 const MOD_DATE_FILENAME = 'modified_dates.json';
+const CURRENT_NFO_FILENAME = 'current.nfo';
 
 class DirFetcher {
 
@@ -14,7 +15,9 @@ class DirFetcher {
         this.hoursToFetch = hoursToFetch;
 
         this.latestDateRetriever = new LatestDateRetriever(dirUrl);
+        
         this.lastModDate = null;
+        this.currentNfoYears = [];
     }
 
     async fetchDirectory() {
@@ -22,6 +25,8 @@ class DirFetcher {
         
         let fetchCount = 0;
         while(fetchCount++ < this.hoursToFetch) {
+            this._fetchCurrentNfoIfMissing(fetchDate);
+
             const listing = await this._fetchListing(fetchDate);
             
             await this._fetchListingFiles(listing);
@@ -57,12 +62,13 @@ class DirFetcher {
                 FileFetcher.fetch(fetchUrl).then(response => {
                     const modDate = response.headers.get('Last-Modified');
 
-                    modDates.registerModDate(fileName, modDate);
-
                     response.text().then(body => {
                         this.store.save(listing.getPath(), 
                             fileName, body)
-                        .then(() => resolve())
+                        .then(() => { 
+                            modDates.registerModDate(fileName, modDate);
+                            resolve();
+                        })
                         .catch(err => reject(err));
 
                     }).catch(err => reject(err));
@@ -81,6 +87,27 @@ class DirFetcher {
             }).catch(err => reject(err));
         });
     }
+
+    _fetchCurrentNfoIfMissing(fetchDate) {
+        const year = fetchDate.getYear();
+        if (!this.currentNfoYears.includes(year)) {                         
+            this.currentNfoYears.push(year)
+
+            const nfoPath = year + '/';
+            const fetchUrl = this._buildUrl(nfoPath, CURRENT_NFO_FILENAME);
+
+            return new Promise((resolve, reject) => {
+                FileFetcher.fetch(fetchUrl).then(response => {
+                    response.text().then(body => {
+                        this.store.save(nfoPath, 
+                            CURRENT_NFO_FILENAME, body)
+                        .then(() => resolve())
+                        .catch(err => reject(err));
+                    })
+                }).catch(err => reject(err));
+            });
+        }
+    }  
 
     _buildUrl(fetchPath, file) {
         return UrlUtil.buildUrl(this.dirUrl, fetchPath, file);
