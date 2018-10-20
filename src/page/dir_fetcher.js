@@ -9,7 +9,7 @@ const CURRENT_NFO_FILENAME = 'current.nfo';
 
 class DirFetcher {
 
-    constructor(dirUrl, store, hoursToFetch) {
+    constructor(dirUrl, store, hoursToFetch, decrementStep = 1) {
         this.dirUrl = dirUrl;
         this.store = store;
         this.hoursToFetch = hoursToFetch;
@@ -18,6 +18,7 @@ class DirFetcher {
         
         this.lastModDate = null;
         this.currentNfoYears = [];
+        this.decrementStep = decrementStep;
     }
 
     async fetchDirectory() {
@@ -31,7 +32,7 @@ class DirFetcher {
             
             await this._fetchListingFiles(listing);
             
-            fetchDate.decrement();
+            fetchDate.decrement(this.decrementStep);
         }
     }
 

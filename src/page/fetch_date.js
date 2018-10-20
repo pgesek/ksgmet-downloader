@@ -47,10 +47,10 @@ class FetchDate {
         return typeof val !== 'undefined';
     }
 
-    decrement() {
+    decrement(decrementStep) {
         const dt = new Date(this.year, this.month - 1, this.day, 
             this.hour);
-        dt.setHours(dt.getHours() - 1);
+        dt.setHours(dt.getHours() - decrementStep);
 
         this.year = dt.getFullYear();
         this.month = dt.getMonth() + 1;

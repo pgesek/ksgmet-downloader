@@ -48,11 +48,15 @@ describe('fetch date', () => {
 
     it('should decrement', () => {
         let date = new FetchDate('2018', '3', '1', '0');
-        date.decrement();
+        date.decrement(1);
         expect(date.toPath()).toEqual('2018/2/28/23/');
 
         date = new FetchDate('2017', '4', '10', '22');
-        date.decrement();
+        date.decrement(1);
         expect(date.toPath()).toEqual('2017/4/10/21/');
+
+        date = new FetchDate('2017', '4', '10', '22');
+        date.decrement(3);
+        expect(date.toPath()).toEqual('2017/4/10/19/');
     });
 });
