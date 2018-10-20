@@ -12,10 +12,15 @@ class TmpFileStore {
 
         this.tmpDir = fs.mkdtempSync(path.join(
             os.tmpdir(), 'ksgmet-downloader-'));
+
+        console.log('Store constructed. Tmp directory: ' +
+            this.tmpDir);
     }
 
     save(subPath, name, body) {
         return new Promise((resolve, reject) => {
+            console.log(`Saving ${name} to ${subPath}`);
+
             const destDirPath = path.join(this.tmpDir, subPath);
             const destFilePath = path.join(destDirPath, name);
 
@@ -30,6 +35,7 @@ class TmpFileStore {
                     reject(err);
                 });
                 dest.on('finish', () => {
+                    console.log(`Saved ${name} to ${subPath}`);
                     resolve(destFilePath);
                 });
                 dest.on('error', err => {
@@ -50,12 +56,15 @@ class TmpFileStore {
             const fileName = 'ksgmet_' + dateString + '.tar.gz';
             const filePath = path.join(os.tmpdir(), fileName);
 
+            console.log('Creating tar: ' + filePath);
+
             targz.compress({
                 src: this.tmpDir,
                 dest: filePath
             }, err => {
                 if (err) reject(err);
 
+                console.log('Tar saved: ' + filePath);
                 resolve(filePath);
             })
         });

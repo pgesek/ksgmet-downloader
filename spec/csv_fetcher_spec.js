@@ -1,4 +1,4 @@
-const DirFetcher = require('../src/page/dir_fetcher.js');
+const CsvFetcher = require('../src/page/csv_fetcher.js');
 const ServerMock = require('mock-http-server');
 const HttpMocks = require('./http_mocks.js');
 
@@ -8,7 +8,7 @@ beforeEach(done => mockServer.start(done));
 
 afterEach(done => mockServer.stop(done));
 
-describe('Directory Fetcher', () => {
+describe('CSV Fetcher', () => {
     it('should fetch directory', async () => {
         const baseUrl = 'http://localhost:9700/CSV/poland';
         const store = { save: function() {
@@ -18,8 +18,8 @@ describe('Directory Fetcher', () => {
         spyOn(store, 'save').and.callThrough();
         HttpMocks.mockCsvPoland2018(mockServer);
 
-        const dirFetcher = new DirFetcher(baseUrl, store, 2);
-        await dirFetcher.fetchDirectory();
+        const csvFetcher = new CsvFetcher(baseUrl, store, 2);
+        await csvFetcher.fetchDirectory();
 
         expect(store.save).toHaveBeenCalledWith('2018/10/13/11/', 'testfile.csv', jasmine.any(String));
         expect(store.save).toHaveBeenCalledWith('2018/10/13/12/', 'ACM_CONVECTIVE_PERCIP.csv', jasmine.any(String));

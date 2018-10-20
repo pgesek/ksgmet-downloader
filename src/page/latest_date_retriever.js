@@ -10,6 +10,8 @@ class LatestDateRetriever {
     }
 
     retrieveLatestDate() {
+        console.log('Retrieving last date path');
+
         const fetchDate = new FetchDate();
         return new Promise((resolve, reject) => {
             this._retrievePart(fetchDate)
@@ -20,6 +22,10 @@ class LatestDateRetriever {
 
     _retrievePart(fetchDate) {
         const fetchUrl = this._buildUrl(fetchDate);
+        
+        console.log('Searching for latest date in path :' + 
+            fetchDate.toPath());
+
         return new Promise((resolve, reject) => {
             FileFetcher.fetch(fetchUrl).then(response => {
                 response.text().then(body => {
@@ -41,7 +47,10 @@ class LatestDateRetriever {
 
         fetchDate.addNextPart(part);
 
+        console.log('Found next part. Date: ' + fetchDate.toPath());
+
         if (fetchDate.isComplete()) {
+            console.log('Fetch date complete: ' + fetchDate.toPath());
             resolve(fetchDate);
         } else {
             this._retrievePart(fetchDate)
