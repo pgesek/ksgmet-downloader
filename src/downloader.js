@@ -6,20 +6,16 @@ const TmpFileStore = require('./persistence/tmp_file_store.js');
 class Downloader {
 
     async download() {
-        try { 
-            log.info('Starting download from ' + Settings.SERVER_URL);
-            
-            const tmpFileStore = new TmpFileStore();
+        log.info('Starting download from ' + Settings.SERVER_URL);
+        
+        const tmpFileStore = new TmpFileStore();
 
-            await this._fetchPlCsv(tmpFileStore);
-            await this._fetchEuLongCsv(tmpFileStore);
+        await this._fetchPlCsv(tmpFileStore);
+        await this._fetchEuLongCsv(tmpFileStore);
 
-            await tmpFileStore.tarStore();
+        await tmpFileStore.tarStore();
 
-            log.info('Download completed')
-        } catch (err) {
-            throw err;
-        }
+        log.info('Download completed')
     }
 
     async _fetchPlCsv(store) {
