@@ -6,7 +6,7 @@ class FileFetcher {
         console.log(`Fetching ${url} using ${method}`);
         return new Promise((resolve, reject) => {
             fetch(url, {method}).then(response => {
-                console.log('Response status: ' + response.status);
+                console.log(`Response status: ${response.status} for ${url}`);
                 if (response.status !== 200) {
                     throw `Response ${response.status} while fetching ${url}`;
                 }

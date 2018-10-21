@@ -4,7 +4,7 @@ const path = require('path');
 const mkdirRec = require('mkdir-recursive');
 const targz = require('targz');
 const moment = require('moment-timezone');
-
+const ZlibConstants = require('zlib').constants;
 class TmpFileStore {
 
     constructor() {
@@ -17,30 +17,63 @@ class TmpFileStore {
             this.tmpDir);
     }
 
-    save(subPath, name, body) {
+    saveString(subPath, name, bodyString) {
+        return this.save(subPath, name, bodyString, true);
+    }
+
+    save(subPath, name, body, isString = false) {
+        console.log(`Saving ${name} to ${subPath}`);
+
+        const destDirPath = path.join(this.tmpDir, subPath);
+
+        if (fs.existsSync(destDirPath)) {
+            return this._saveFile(destDirPath, subPath, name, body, 
+                isString);
+        } else {
+            console.log('Creating directory: ' + destDirPath);
+            return new Promise((resolve, reject) => {
+                mkdirRec.mkdir(destDirPath, err => {
+                    if (err) {
+                        if (fs.existsSync(destDirPath)) {
+                            console.log('Directory already exists, continuing')
+                        } else {
+                            reject(err);
+                        }
+                    }   
+                    
+                    this._saveFile(destDirPath, subPath, name, body, isString)
+                        .then(fileName => resolve(fileName))
+                        .catch(err => reject(err));
+                });
+            });
+        }
+    }
+
+    _saveFile(destDirPath, subPath, name, body, isString) {
         return new Promise((resolve, reject) => {
-            console.log(`Saving ${name} to ${subPath}`);
-
-            const destDirPath = path.join(this.tmpDir, subPath);
             const destFilePath = path.join(destDirPath, name);
+            const dest = fs.createWriteStream(destFilePath);
+            
+            console.log(`Destination for ${name}: ${destFilePath}`);
 
-            mkdirRec.mkdir(destDirPath, err => {
-                if (err) reject(err);   
-                
-                const dest = fs.createWriteStream(destFilePath);
-                
+            if (isString) {
+                dest.write(body, err => {
+                    if (err) reject(err);
+                    resolve(destFilePath);
+                });
+            } else {
                 body.pipe(dest);
-
                 body.on('error', err => {
                     reject(err);
                 });
-                dest.on('finish', () => {
-                    console.log(`Saved ${name} to ${subPath}`);
-                    resolve(destFilePath);
-                });
-                dest.on('error', err => {
-                    reject(err);
-                });
+            }   
+
+            dest.on('finish', () => {
+                console.log(`Saved ${name} to ${subPath}`);
+                resolve(destFilePath);
+            });
+            dest.on('error', err => {
+                reject(err);
             });
         });
     }
@@ -60,7 +93,10 @@ class TmpFileStore {
 
             targz.compress({
                 src: this.tmpDir,
-                dest: filePath
+                dest: filePath,
+                gz: {
+                    level: ZlibConstants.Z_BEST_COMPRESSION 
+                }
             }, err => {
                 if (err) reject(err);
 

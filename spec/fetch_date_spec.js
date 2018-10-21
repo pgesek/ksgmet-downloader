@@ -59,4 +59,9 @@ describe('fetch date', () => {
         date.decrement(3);
         expect(date.toPath()).toEqual('2017/4/10/19/');
     });
+
+    it('should print 0 hour date', () => {
+        const date = new FetchDate(2018, 3, 1, 0);
+        expect(date.toPath()).toEqual('2018/3/1/0/')
+    });
 });

@@ -23,16 +23,16 @@ class FetchDate {
 
     toPath() {
         let path = '';
-        if (this.year) {
+        if (this.year !== undefined) {
             path += `${this.year}/`;
         }
-        if (this.month) {
+        if (this.month !== undefined) {
             path += `${this.month}/`;
         }
-        if (this.day) {
+        if (this.day !== undefined) {
             path += `${this.day}/`;
         }
-        if (this.hour) {
+        if (this.hour !== undefined) {
             path += `${this.hour}/`;
         }
         return path;

@@ -43,6 +43,8 @@ class CsvFetcher {
             fetchDate.decrement(this.decrementStep);
             fetchCount += this.decrementStep;
         }
+
+        console.log('Done after ' + fetchCount + ' steps');
     }
 
     _fetchListing(fetchDate) {
@@ -75,16 +77,14 @@ class CsvFetcher {
                 FileFetcher.fetch(fetchUrl).then(response => {
                     const modDate = response.headers.get('Last-Modified');
 
-                    response.text().then(body => {
-                        this.store.save(listing.getPath(), 
-                            fileName, body)
-                        .then(() => { 
-                            console.log(`Saving modified date ` + modDate +
+                    this.store.save(listing.getPath(), 
+                        fileName, response.body)
+                    .then(() => { 
+                        console.log(`Saving modified date ` + modDate +
                             ' for file ' + fetchUrl);
 
-                            modDates.registerModDate(fileName, modDate);
-                            resolve();
-                        }).catch(err => reject(err));
+                        modDates.registerModDate(fileName, modDate);
+                        resolve();
                     }).catch(err => reject(err));
                 }).catch(err => reject(err));
             });
@@ -97,7 +97,7 @@ class CsvFetcher {
                 console.log('All files retrieved for listing: ' +
                     listing.getPath());
 
-                this.store.save(listing.getPath(), 
+                this.store.saveString(listing.getPath(), 
                     MOD_DATE_FILENAME, modDates.print()
                 ).then(() => resolve())
                 .catch(err => reject(err));
@@ -119,13 +119,11 @@ class CsvFetcher {
 
             return new Promise((resolve, reject) => {
                 FileFetcher.fetch(fetchUrl).then(response => {
-                    response.text().then(body => {
-                        console.log('Storing current.nfo at: ' + nfoPath);
-                        this.store.save(nfoPath, 
-                            CURRENT_NFO_FILENAME, body)
-                        .then(() => resolve())
-                        .catch(err => reject(err));
-                    })
+                    console.log('Storing current.nfo at: ' + nfoPath);
+                    this.store.save(nfoPath, 
+                        CURRENT_NFO_FILENAME, response.body)
+                    .then(() => resolve())
+                    .catch(err => reject(err));
                 }).catch(err => reject(err));
             });
         } else {
