@@ -1,6 +1,7 @@
 const CacheFetcher = require('./page/cache_fetcher.js');
 const CsvFetcher = require('./page/csv_fetcher.js');
 const log = require('./util/log.js');
+const S3Uploader = require('./persistence/s3_uploader.js');
 const Settings = require('./util/settings.js');
 const TmpFileStore = require('./persistence/tmp_file_store.js');
 
@@ -15,9 +16,21 @@ class Downloader {
         await this._fetchEuLongCsv(tmpFileStore);
         await this._fetchPlCache(tmpFileStore);
 
-        await tmpFileStore.tarStore();
-
         log.info('Download completed')
+        
+        log.info('Creating tar');
+        const tarFile = await tmpFileStore.tarStore();
+
+        if (Settings.UPLOAD_TO_S3) {
+            log.info('Uploading tar to S3');
+
+            const bucketUploader = new S3Uploader(Settings.S3_BUCKET_NAME);
+            bucketUploader.uploadFile(tarFile);
+        } else {
+            log.info('S3 upload disabled');
+        }
+
+        log.info('Done');
     }
 
     async _fetchPlCsv(store) {
