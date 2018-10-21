@@ -19,7 +19,8 @@
     "mock-http-server": "^1.0.0"
   },
   "dependencies": {
-    "cherio": "1.0.0-rc.2",
+    "aws-sdk": "^2.339.0",
+    "cherio": "^1.0.0-rc.2",
     "dotenv": "^6.1.0",
     "fstream": "^1.0.11",
     "mkdir-recursive": "^0.4.0",

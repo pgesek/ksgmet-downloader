@@ -1,4 +1,5 @@
 require('dotenv').load();
+const AWS = require('aws-sdk');
 
 function getSetting(varName, defaultVal) {
     let setting = process.env[varName];
@@ -8,7 +9,7 @@ function getSetting(varName, defaultVal) {
     return setting;
 }
 
-module.exports = Object.freeze({
+const settings = Object.freeze({
     SERVER_URL: getSetting('SERVER_URL'),
     
     PL_CSV_URL: getSetting('PL_CSV_URL', 'prognozy/CSV/poland/'),
@@ -21,5 +22,14 @@ module.exports = Object.freeze({
 
     PL_CACHE_URL: getSetting('PL_CACHE_URL', 'prognozy/CACHE/poland/'),
 
-    LOG_LEVEL: 'info'
+    LOG_LEVEL: 'info',
+
+    UPLOAD_TO_S3: getSetting('UPLOAD_TO_S3', false),
+    LOAD_AWS_CONFIG_FILE: getSetting('LOAD_AWS_CONFIG_FILE', false)
 });
+
+if (settings.LOAD_AWS_CONFIG_FILE) {
+    AWS.config.loadFromPath('./.aws-config.json');
+}
+
+module.exports = settings;

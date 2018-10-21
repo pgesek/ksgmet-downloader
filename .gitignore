@@ -65,3 +65,6 @@ dist
 
 # Visual Studio Code
 .vscode
+
+# AWS Credentials
+.aws-config.json
