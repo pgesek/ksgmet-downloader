@@ -1,5 +1,4 @@
-const DateHelper = require('../src/util/date_helper.js');
-
+const DateHelper = require('../../src/util/date_helper.js');
 
 describe('date helper', function() {
     it('should parse dates to paths', function() {

@@ -1,4 +1,4 @@
-const ModifiedDates = require('../src/page/modified_dates.js');
+const ModifiedDates = require('../../src/page/modified_dates.js');
 
 describe('modified dates', () => {
     it ('should print', () => {

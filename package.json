@@ -6,7 +6,7 @@
   "scripts": {
     "build-aws-resource": "mkdir -p dist && pack-zip && mv *.zip dist",
     "build-aws-resource-win": "if not exist dist mkdir dist && pack-zip && move *.zip dist",
-    "test": "jasmine spec/*_spec.js"
+    "test": "jasmine spec/**/*_spec.js"
   },
   "author": "Paweł Gesek",
   "license": "MIT",

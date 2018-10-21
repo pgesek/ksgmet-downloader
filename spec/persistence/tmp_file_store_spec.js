@@ -1,4 +1,4 @@
-const TmpFileStore = require('../src/persistence/tmp_file_store.js');
+const TmpFileStore = require('../../src/persistence/tmp_file_store.js');
 const os = require('os');
 const path = require('path');
 const fs = require('fs');

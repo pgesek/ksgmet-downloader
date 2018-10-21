@@ -1,6 +1,6 @@
-const CsvFetcher = require('../src/page/csv_fetcher.js');
+const CsvFetcher = require('../../src/page/csv_fetcher.js');
 const ServerMock = require('mock-http-server');
-const HttpMocks = require('./http_mocks.js');
+const HttpMocks = require('../test-util/http_mocks.js');
 
 const mockServer = new ServerMock({ host: "localhost", port: 9700 });
 

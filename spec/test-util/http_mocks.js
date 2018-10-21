@@ -39,7 +39,7 @@ class HttpMocks {
     }
 
     static readFile(path) {
-        return fs.readFileSync('spec/data/mock_http' + path);
+        return fs.readFileSync('spec/test-data/mock_http' + path);
     }
 }
 

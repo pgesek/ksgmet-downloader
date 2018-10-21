@@ -1,6 +1,6 @@
-const LatestDateRetriever = require('../src/page/latest_date_retriever.js');
+const LatestDateRetriever = require('../../src/page/latest_date_retriever.js');
 const ServerMock = require('mock-http-server');
-const HttpMocks = require('./http_mocks.js');
+const HttpMocks = require('../test-util/http_mocks.js');
 
 describe('latest date retriever', () => {
     

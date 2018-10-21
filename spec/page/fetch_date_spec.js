@@ -1,4 +1,4 @@
-const FetchDate = require('../src/page/fetch_date.js');
+const FetchDate = require('../../src/page/fetch_date.js');
 
 describe('fetch date', () => {
     it('should build path', () => {
