@@ -25,7 +25,8 @@ const settings = Object.freeze({
     LOG_LEVEL: 'info',
 
     UPLOAD_TO_S3: getSetting('UPLOAD_TO_S3', false),
-    LOAD_AWS_CONFIG_FILE: getSetting('LOAD_AWS_CONFIG_FILE', false)
+    LOAD_AWS_CONFIG_FILE: getSetting('LOAD_AWS_CONFIG_FILE', false),
+    S3_BUCKET_NAME: getSetting('S3_BUCKET_NAME')
 });
 
 if (settings.LOAD_AWS_CONFIG_FILE) {
