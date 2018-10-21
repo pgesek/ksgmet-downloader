@@ -1,10 +1,12 @@
 const fs = require('fs');
+const log = require('../util/log.js');
+const mkdirRec = require('mkdir-recursive');
+const moment = require('moment-timezone');
 const os = require('os');
 const path = require('path');
-const mkdirRec = require('mkdir-recursive');
 const targz = require('targz');
-const moment = require('moment-timezone');
 const ZlibConstants = require('zlib').constants;
+
 class TmpFileStore {
 
     constructor() {
@@ -13,7 +15,7 @@ class TmpFileStore {
         this.tmpDir = fs.mkdtempSync(path.join(
             os.tmpdir(), 'ksgmet-downloader-'));
 
-        console.log('Store constructed. Tmp directory: ' +
+        log.info('Store constructed. Tmp directory: ' +
             this.tmpDir);
     }
 
@@ -22,31 +24,26 @@ class TmpFileStore {
     }
 
     save(subPath, name, body, isString = false) {
-        console.log(`Saving ${name} to ${subPath}`);
+        log.debug(`Saving ${name} to ${subPath}`);
 
         const destDirPath = path.join(this.tmpDir, subPath);
 
-        if (fs.existsSync(destDirPath)) {
-            return this._saveFile(destDirPath, subPath, name, body, 
-                isString);
-        } else {
-            console.log('Creating directory: ' + destDirPath);
-            return new Promise((resolve, reject) => {
-                mkdirRec.mkdir(destDirPath, err => {
-                    if (err) {
-                        if (fs.existsSync(destDirPath)) {
-                            console.log('Directory already exists, continuing')
-                        } else {
-                            reject(err);
-                        }
-                    }   
-                    
-                    this._saveFile(destDirPath, subPath, name, body, isString)
-                        .then(fileName => resolve(fileName))
-                        .catch(err => reject(err));
-                });
+        return new Promise((resolve, reject) => {
+            log.debug('Creating directory: ' + destDirPath);
+            mkdirRec.mkdir(destDirPath, err => {
+                if (err) {
+                    if (fs.existsSync(destDirPath)) {
+                        log.debug('Directory already exists, continuing');
+                    } else {
+                        reject(err);
+                    }
+                }   
+                
+                this._saveFile(destDirPath, subPath, name, body, isString)
+                    .then(fileName => resolve(fileName))
+                    .catch(err => reject(err));
             });
-        }
+        });
     }
 
     _saveFile(destDirPath, subPath, name, body, isString) {
@@ -54,7 +51,7 @@ class TmpFileStore {
             const destFilePath = path.join(destDirPath, name);
             const dest = fs.createWriteStream(destFilePath);
             
-            console.log(`Destination for ${name}: ${destFilePath}`);
+            log.debug(`Destination for ${name}: ${destFilePath}`);
 
             if (isString) {
                 dest.write(body, err => {
@@ -69,7 +66,7 @@ class TmpFileStore {
             }   
 
             dest.on('finish', () => {
-                console.log(`Saved ${name} to ${subPath}`);
+                log.debug(`Saved ${name} to ${subPath}`);
                 resolve(destFilePath);
             });
             dest.on('error', err => {
@@ -89,7 +86,7 @@ class TmpFileStore {
             const fileName = 'ksgmet_' + dateString + '.tar.gz';
             const filePath = path.join(os.tmpdir(), fileName);
 
-            console.log('Creating tar: ' + filePath);
+            log.info('Creating tar: ' + filePath);
 
             targz.compress({
                 src: this.tmpDir,
@@ -100,7 +97,7 @@ class TmpFileStore {
             }, err => {
                 if (err) reject(err);
 
-                console.log('Tar saved: ' + filePath);
+                log.info('Tar saved: ' + filePath);
                 resolve(filePath);
             })
         });

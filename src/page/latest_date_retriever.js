@@ -1,6 +1,7 @@
 const FileFetcher = require("./file_fetcher.js");  
 const FetchDate = require("./fetch_date.js");  
 const HtmlListing = require("./html_listing.js");  
+const log = require('../util/log.js');
 const UrlUtil = require('../util/url_util.js');
 
 class LatestDateRetriever {
@@ -10,7 +11,7 @@ class LatestDateRetriever {
     }
 
     retrieveLatestDate() {
-        console.log('Retrieving last date path');
+        log.debug('Retrieving last date path');
 
         const fetchDate = new FetchDate();
         return new Promise((resolve, reject) => {
@@ -23,7 +24,7 @@ class LatestDateRetriever {
     _retrievePart(fetchDate) {
         const fetchUrl = this._buildUrl(fetchDate);
         
-        console.log('Searching for latest date in path :' + 
+        log.debug('Searching for latest date in path :' + 
             fetchDate.toPath());
 
         return new Promise((resolve, reject) => {
@@ -47,10 +48,10 @@ class LatestDateRetriever {
 
         fetchDate.addNextPart(part);
 
-        console.log('Found next part. Date: ' + fetchDate.toPath());
+        log.debug('Found next part. Date: ' + fetchDate.toPath());
 
         if (fetchDate.isComplete()) {
-            console.log('Fetch date complete: ' + fetchDate.toPath());
+            log.info('Fetch date complete: ' + fetchDate.toPath());
             resolve(fetchDate);
         } else {
             this._retrievePart(fetchDate)
