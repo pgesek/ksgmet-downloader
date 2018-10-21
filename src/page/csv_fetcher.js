@@ -1,22 +1,17 @@
-const FileFetcher = require("./file_fetcher.js");  
-const HtmlListing = require('./html_listing.js');
+const Fetcher = require('./fetcher.js')
+const FileFetcher = require('./file_fetcher.js'); 
 const LatestDateRetriever = require('./latest_date_retriever.js');
 const log = require('../util/log.js');
 const ModifiedDates = require('./modified_dates.js');
-const path = require('path');
-const UrlUtil = require('../util/url_util.js');
 
-const MOD_DATE_FILENAME = 'modified_dates.json';
 const CURRENT_NFO_FILENAME = 'current.nfo';
+const MOD_DATE_FILENAME = 'modified_dates.json';
 
-class CsvFetcher {
+class CsvFetcher extends Fetcher {
 
     constructor(baseUrl, dirPath, store, hoursToFetch, decrementStep = 1) {
-        this.baseUrl = baseUrl;
-        this.dirPath = dirPath;
-        this.dirUrl = UrlUtil.buildUrl(baseUrl, dirPath);
+        super(baseUrl, dirPath, store);
 
-        this.store = store;
         this.hoursToFetch = hoursToFetch;
 
         this.latestDateRetriever = new LatestDateRetriever(this.dirUrl);
@@ -53,20 +48,7 @@ class CsvFetcher {
     }
 
     _fetchListing(fetchDate) {
-        const fetchUrl = this._buildUrl(fetchDate.toPath());
-        return new Promise((resolve, reject) => {
-            FileFetcher.fetch(fetchUrl).then(response => {
-                response.text().then(body => {
-                    const listing = new HtmlListing(body, 
-                        fetchDate.toPath());
-               
-                    log.debug('Listing retrieved from: ' + 
-                        listing.getPath());
-                        
-                    resolve(listing);
-                });
-            }).catch(err => reject(err));
-        });
+        return super._fetchListing(fetchDate.toPath());
     }
 
     _fetchListingFiles(listing) {
@@ -136,14 +118,6 @@ class CsvFetcher {
             log.debug('current.nfo already downloaded for year ' + year);
         }
     }  
-
-    _buildUrl(fetchPath, file) {
-        return UrlUtil.buildUrl(this.dirUrl, fetchPath, file);
-    }
-
-    _savePath(filePath) {
-        return path.posix.join(this.dirPath, filePath); 
-    }
 }
 
 module.exports = CsvFetcher;

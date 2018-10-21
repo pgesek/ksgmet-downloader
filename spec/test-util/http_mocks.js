@@ -13,6 +13,10 @@ class HttpMocks {
         this.mockFile(mockServer, '/CSV/poland/2018/10/13/12/WVC.csv');
         this.mockIndex(mockServer, '/CSV/poland/2018/10/13/11/');
         this.mockFile(mockServer, '/CSV/poland/2018/10/13/11/testfile.csv');
+
+        this.mockIndex(mockServer, '/CACHE/poland/');
+        this.mockFile(mockServer, '/CACHE/poland/147_143_91_1_0_0_0_0_21_10_2018_0_HIGH_CLOUD_FRACTION.bin');
+        this.mockFile(mockServer, '/CACHE/poland/147_143_91_1_0_0_0_0_21_10_2018_0_LOW_CLOUD_FRACTION.bin');
     }
 
     static mockIndex(mockServer, path) {

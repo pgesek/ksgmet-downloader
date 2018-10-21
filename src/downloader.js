@@ -1,3 +1,4 @@
+const CacheFetcher = require('./page/cache_fetcher.js');
 const CsvFetcher = require('./page/csv_fetcher.js');
 const log = require('./util/log.js');
 const Settings = require('./util/settings.js');
@@ -12,6 +13,7 @@ class Downloader {
 
         await this._fetchPlCsv(tmpFileStore);
         await this._fetchEuLongCsv(tmpFileStore);
+        await this._fetchPlCache(tmpFileStore);
 
         await tmpFileStore.tarStore();
 
@@ -50,6 +52,21 @@ class Downloader {
         await euLongCsvFetcher.fetchDirectory();
 
         log.info('Europe Long CSV fetch completed');
+    }
+
+    async _fetchPlCache(store) {
+        const baseUrl = Settings.SERVER_URL;
+        const cachePath = Settings.PL_CACHE_URL;
+        
+        log.info(`Fetching PL Cache from Long CSV from: ` + 
+            `${baseUrl}, path: ${cachePath}.`);
+
+        const plCacheFetcher = new CacheFetcher(baseUrl, cachePath, 
+            store);
+
+        await plCacheFetcher.fetchDirectory();
+
+        log.info('PL Cache donwload completed');
     }
 }
 

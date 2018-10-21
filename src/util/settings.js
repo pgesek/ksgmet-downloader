@@ -19,5 +19,7 @@ module.exports = Object.freeze({
     EUROPE_LONG_CSV_STEP: parseInt(getSetting('EUROPE_LONG_STEP', '3')),
     EUROPE_LONG_CSV_FETCH_HOURS: parseInt(getSetting('EUROPE_LONG_FETCH_HOURS', 7 * 24)),
 
+    PL_CACHE_URL: getSetting('PL_CACHE_URL', 'prognozy/CACHE/poland/'),
+
     LOG_LEVEL: 'info'
 });
