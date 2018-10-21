@@ -18,10 +18,15 @@ describe('CSV Fetcher', () => {
             },
             saveString: function () {
                 return new Promise(resolve => resolve());
+            },
+            ensureDirStructure() {
+                return new Promise(resolve => resolve());
             }
         };
         spyOn(store, 'save').and.callThrough();
         spyOn(store, 'saveString').and.callThrough();
+        spyOn(store, 'ensureDirStructure').and.callThrough();
+
         HttpMocks.mockCsvPoland2018(mockServer);
 
         const csvFetcher = new CsvFetcher(baseUrl, csvPath, store, 2);
@@ -34,5 +39,7 @@ describe('CSV Fetcher', () => {
         expect(store.saveString).toHaveBeenCalledWith('/CSV/poland/2018/10/13/11/', 'modified_dates.json', jasmine.any(String));
         expect(store.saveString).toHaveBeenCalledWith('/CSV/poland/2018/10/13/12/', 'modified_dates.json', jasmine.any(String));
         expect(store.save).toHaveBeenCalledWith('/CSV/poland/2018/', 'current.nfo', jasmine.anything());
+        expect(store.ensureDirStructure).toHaveBeenCalledWith('/CSV/poland/2018/10/13/11/');
+        expect(store.ensureDirStructure).toHaveBeenCalledWith('/CSV/poland/2018/10/13/12/');
     });
 });

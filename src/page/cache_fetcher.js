@@ -13,6 +13,10 @@ class CacheFetcher extends Fetcher {
 
         const listing = await this._fetchListing('');
 
+        log.info('Ensuring directory structure exists for CACHE')
+        await this.store.ensureDirStructure(
+            this._savePath(listing.getPath()));
+
         log.debug('Retrieving cache files from listing: ' + listing.getPath());
         await this._fetchListingFiles(listing);
 

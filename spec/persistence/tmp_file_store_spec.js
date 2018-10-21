@@ -14,17 +14,30 @@ describe('tmp file store', () => {
             on: (what, val) => {}
         };
 
-        store.save('1/2/3/', 'test.txt', body).then(file => {
-            fs.readFile(file, 'utf8', function(err, data) {
-                if (err) throw err;
-                
-                expect(data).toEqual("test content");
-                
-                store.tarStore().then(tarPath => {
-                    expect(fs.existsSync(tarPath)).toBeTruthy();
-                    done();
+        store.ensureDirStructure('1/2/3/').then(() => {
+            store.save('1/2/3/', 'test.txt', body).then(file => {
+                fs.readFile(file, 'utf8', function(err, data) {
+                    if (err) throw err;
+                    
+                    expect(data).toEqual("test content");
+                    
+                    store.tarStore().then(tarPath => {
+                        expect(fs.existsSync(tarPath)).toBeTruthy();
+                        done();
+                    });
                 });
             });
         });
+    });
+
+    it('should ensure a directory structure', async () => {
+        const path = '3/2/11';
+        const store = new TmpFileStore();
+        
+        let dirPath = await store.ensureDirStructure(path);
+        expect(fs.existsSync(dirPath)).toBeTruthy();
+
+        dirPath = await store.ensureDirStructure(path);
+        expect(fs.existsSync(dirPath)).toBeTruthy();
     });
 });

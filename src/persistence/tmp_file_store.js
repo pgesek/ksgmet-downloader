@@ -19,6 +19,26 @@ class TmpFileStore {
             this.tmpDir);
     }
 
+    ensureDirStructure(subPath) {
+        log.debug('Ensuring directory structure for: ' + subPath);
+        const destDirPath = path.join(this.tmpDir, subPath);
+
+        return new Promise((resolve, reject) => {
+            if (fs.existsSync(destDirPath)) {
+                log.debug('Directory already exists: ' + destDirPath);
+                resolve(destDirPath);
+            } else {
+                log.debug('Creating directory: ' + destDirPath);
+                mkdirRec.mkdir(destDirPath, err => {
+                    if (err) reject(err);
+
+                    log.debug('Directory created: ' + destDirPath);
+                    resolve(destDirPath);
+                });
+            }
+        });
+    }
+
     saveString(subPath, name, bodyString) {
         return this.save(subPath, name, bodyString, true);
     }
@@ -29,20 +49,9 @@ class TmpFileStore {
         const destDirPath = path.join(this.tmpDir, subPath);
 
         return new Promise((resolve, reject) => {
-            log.debug('Creating directory: ' + destDirPath);
-            mkdirRec.mkdir(destDirPath, err => {
-                if (err) {
-                    if (fs.existsSync(destDirPath)) {
-                        log.debug('Directory already exists, continuing');
-                    } else {
-                        reject(err);
-                    }
-                }   
-                
-                this._saveFile(destDirPath, subPath, name, body, isString)
-                    .then(fileName => resolve(fileName))
-                    .catch(err => reject(err));
-            });
+            this._saveFile(destDirPath, subPath, name, body, isString)
+                .then(fileName => resolve(fileName))
+                .catch(err => reject(err));
         });
     }
 

@@ -31,12 +31,16 @@ class CsvFetcher extends Fetcher {
 
         let fetchCount = 0;
         while(fetchCount < this.hoursToFetch) {
-            log.debug('Checking for current.nfo');
-            this._fetchCurrentNfoIfMissing(fetchDate);
-
             log.debug('Retrieving listing from: ' + fetchDate.toPath());
             const listing = await this._fetchListing(fetchDate);
             
+            log.debug('Ensuring directory structure in store for: ' + listing.getPath());
+            await this.store.ensureDirStructure(
+                this._savePath(listing.getPath()));
+
+            log.debug('Checking for current.nfo');
+            this._fetchCurrentNfoIfMissing(fetchDate);
+
             log.debug('Retrieving files from listing: ' + listing.getPath());
             await this._fetchListingFiles(listing);
             
@@ -82,7 +86,7 @@ class CsvFetcher extends Fetcher {
         return new Promise((resolve, reject) => {
             Promise.all(promises).then(() => {
                 log.info('All files retrieved for listing: ' +
-                    listing.getPath());
+                    this._buildUrl(listing.getPath()));
 
                 this.store.saveString(
                     this._savePath(listing.getPath()), 
