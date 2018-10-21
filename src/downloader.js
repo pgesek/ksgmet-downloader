@@ -1,6 +1,6 @@
 const CsvFetcher = require('./page/csv_fetcher.js');
 const log = require('./util/log.js');
-const Settings = require('./settings.js');
+const Settings = require('./util/settings.js');
 const TmpFileStore = require('./persistence/tmp_file_store.js');
 
 class Downloader {

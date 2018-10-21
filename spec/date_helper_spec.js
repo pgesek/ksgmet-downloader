@@ -1,4 +1,4 @@
-const DateHelper = require('../src/date_helper.js');
+const DateHelper = require('../src/util/date_helper.js');
 
 
 describe('date helper', function() {

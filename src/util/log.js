@@ -1,4 +1,4 @@
-const Settings = require('../settings.js');
+const Settings = require('./settings.js');
 const winston = require('winston');
 const { combine, timestamp, simple, printf } = winston.format;
 
