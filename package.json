@@ -4,17 +4,17 @@
   "description": "Downloader function for KSG-Met",
   "main": "src/index.js",
   "scripts": {
-    "build-aws-resource": "pack-zip",
-    "build-aws-resource-win": "pack.cmd & move ksgmet-downloader.zip dist",
+    "build-aws-resource": "mkdir -f dist && bestzip dist/ksgmet-downloader.zip src/ index.js node_modules/ LICENSE package.json",
+    "build-aws-resource-win": "pack.cmd",
     "test": "jasmine spec/**/*_spec.js"
   },
   "author": "Paweł Gesek",
   "license": "MIT",
   "devDependencies": {
+    "bestzip": "^2.1.2",
     "eslint": "^5.6.1",
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-plugin-import": "^2.14.0",
-    "pack-zip": "^0.2.2",
     "jasmine": "^3.2.0",
     "mock-http-server": "^1.0.0"
   },
