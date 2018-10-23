@@ -31,7 +31,14 @@ class Fetcher {
                         
                     resolve(listing);
                 });
-            }).catch(err => reject(err));
+            }).catch(err => {
+                const errMsg = `Response ${err} received for ${listingPath}`;
+                if (err === 404) {
+                    log.error(errMsg);
+                    resolve(null);
+                }
+                reject(errMsg);
+            });
         });
     }
 

@@ -9,7 +9,8 @@ const MOD_DATE_FILENAME = 'modified_dates.json';
 
 class CsvFetcher extends Fetcher {
 
-    constructor(baseUrl, dirPath, store, hoursToFetch, decrementStep = 1) {
+    constructor(baseUrl, dirPath, store, hoursToFetch, decrementStep = 1,
+            errorLimit = 1) {
         super(baseUrl, dirPath, store);
 
         this.hoursToFetch = hoursToFetch;
@@ -19,6 +20,7 @@ class CsvFetcher extends Fetcher {
         this.lastModDate = null;
         this.currentNfoYears = [];
         this.decrementStep = decrementStep;
+        this.errorLimit = errorLimit;
     }
 
     async fetchDirectory() {
@@ -30,22 +32,40 @@ class CsvFetcher extends Fetcher {
             fetchDate.toPath());
 
         let fetchCount = 0;
+        let notFoundCount = 0;
         while(fetchCount < this.hoursToFetch) {
             log.debug('Retrieving listing from: ' + fetchDate.toPath());
             const listing = await this._fetchListing(fetchDate);
             
-            log.debug('Ensuring directory structure in store for: ' + listing.getPath());
-            await this.store.ensureDirStructure(
-                this._savePath(listing.getPath()));
+            if (listing) {
+                notFoundCount = 0;
 
-            log.debug('Checking for current.nfo');
-            this._fetchCurrentNfoIfMissing(fetchDate);
+                log.debug('Ensuring directory structure in store for: ' + listing.getPath());
+                await this.store.ensureDirStructure(
+                    this._savePath(listing.getPath()));
 
-            log.debug('Retrieving files from listing: ' + listing.getPath());
-            await this._fetchListingFiles(listing);
-            
-            fetchDate.decrement(this.decrementStep);
-            fetchCount += this.decrementStep;
+                log.debug('Checking for current.nfo');
+                this._fetchCurrentNfoIfMissing(fetchDate);
+
+                log.debug('Retrieving files from listing: ' + listing.getPath());
+                await this._fetchListingFiles(listing);
+
+                fetchCount += this.decrementStep;
+                fetchDate.decrement(this.decrementStep);
+            } else {
+                log.warn('Skipping: ' + fetchDate.toPath());
+                
+                notFoundCount++;
+                log.warn('This is error number ' + notFoundCount);
+
+                if (notFoundCount > this.errorLimit) {
+                    throw new Error('Got 404 error for listings too mayn times');
+                }
+
+                log.warn('Trying one hour lower');
+
+                fetchDate.decrement(1);
+            }
         }
 
         log.info(`Done with ${this.dirUrl} after ${fetchCount} steps`);

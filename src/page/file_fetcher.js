@@ -9,7 +9,7 @@ class FileFetcher {
             fetch(url, {method}).then(response => {
                 log.debug(`Response status: ${response.status} for ${url}`);
                 if (response.status !== 200) {
-                    throw `Response ${response.status} while fetching ${url}`;
+                    reject(response.status);
                 }
                 
                 resolve(response);
