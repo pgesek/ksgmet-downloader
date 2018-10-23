@@ -4,7 +4,7 @@ const fs = require('fs');
 const log = require('./util/log.js');
 const moment = require('moment-timezone');
 const S3Uploader = require('./persistence/s3_uploader.js');
-const Settings = require('./util/settings.js');
+const settings = require('./util/settings.js');
 const TmpFileStore = require('./persistence/tmp_file_store.js');
 
 class Downloader {
@@ -14,12 +14,12 @@ class Downloader {
         
         this.store = new TmpFileStore();
         this.prefix = this._generatePrefix();
-        this.s3uploader = new S3Uploader(Settings.S3_BUCKET_NAME, 
+        this.s3uploader = new S3Uploader(settings.S3_BUCKET_NAME, 
             this.prefix);
     }
 
     async download() {
-        log.info('Starting download from ' + Settings.SERVER_URL);
+        log.info('Starting download from ' + settings.SERVER_URL);
         log.info('Saving under prefix: ' + this.prefix);
 
         await this._fetchPlCsv();
@@ -30,11 +30,11 @@ class Downloader {
     }
 
     async _fetchPlCsv() {
-        const baseUrl = Settings.SERVER_URL;
-        const csvPath = Settings.PL_CSV_URL; 
-        const hours = Settings.PL_CSV_FETCH_HOURS;
-        const step = Settings.PL_CSV_STEP;
-        const errLimit = Settings.PL_CSV_ERROR_LIMIT;
+        const baseUrl = settings.SERVER_URL;
+        const csvPath = settings.PL_CSV_URL; 
+        const hours = settings.PL_CSV_FETCH_HOURS;
+        const step = settings.PL_CSV_STEP;
+        const errLimit = settings.PL_CSV_ERROR_LIMIT;
 
         log.info(`Fetching last ${hours} PL CSV from: ` +
             `${baseUrl}, path: ${csvPath}. Step used: ${step} ` +
@@ -50,11 +50,11 @@ class Downloader {
     }
 
     async _fetchEuLongCsv() {
-        const baseUrl = Settings.SERVER_URL;
-        const csvPath = Settings.EUROPE_LONG_CSV_URL; 
-        const hours = Settings.EUROPE_LONG_CSV_FETCH_HOURS;
-        const step = Settings.EUROPE_LONG_CSV_STEP;
-        const errLimit = Settings.EUROPE_LONG_ERROR_LIMIT;
+        const baseUrl = settings.SERVER_URL;
+        const csvPath = settings.EUROPE_LONG_CSV_URL; 
+        const hours = settings.EUROPE_LONG_CSV_FETCH_HOURS;
+        const step = settings.EUROPE_LONG_CSV_STEP;
+        const errLimit = settings.EUROPE_LONG_ERROR_LIMIT;
 
         log.info(`Fetching last ${hours} Europe Long CSV from: ` + 
             `${baseUrl}, path: ${csvPath}. Step used: ${step} ` +
@@ -70,8 +70,8 @@ class Downloader {
     }
 
     async _fetchPlCache() {
-        const baseUrl = Settings.SERVER_URL;
-        const cachePath = Settings.PL_CACHE_URL;
+        const baseUrl = settings.SERVER_URL;
+        const cachePath = settings.PL_CACHE_URL;
         
         log.info(`Fetching PL Cache from Long CSV from: ` + 
             `${baseUrl}, path: ${cachePath}.`);
@@ -90,7 +90,7 @@ class Downloader {
     }
 
     async _uploadToS3AndRm(tarPath) {
-        if (Settings.UPLOAD_TO_S3) {
+        if (settings.UPLOAD_TO_S3) {
             log.info('Uploading tar to S3');
             
             await this.s3uploader.uploadFile(tarPath);
