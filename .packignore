@@ -1,6 +1,11 @@
 # This is the ignore file for the pack script that builds the zip for AWS
+.aws-config.json
 .env
-package-lock.json
-manual_run.js
-README.md
+.vscode
 dist
+manual_run.js
+pack.cmd
+package-lock.json
+README.md
+spec/**
+*.log

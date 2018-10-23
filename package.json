@@ -4,8 +4,8 @@
   "description": "Downloader function for KSG-Met",
   "main": "src/index.js",
   "scripts": {
-    "build-aws-resource": "mkdir -p dist && pack-zip && mv *.zip dist",
-    "build-aws-resource-win": "if not exist dist mkdir dist && pack-zip && move *.zip dist",
+    "build-aws-resource": "pack-zip",
+    "build-aws-resource-win": "pack.cmd & move ksgmet-downloader.zip dist",
     "test": "jasmine spec/**/*_spec.js"
   },
   "author": "Paweł Gesek",
