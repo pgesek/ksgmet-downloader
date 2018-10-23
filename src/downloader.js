@@ -103,7 +103,7 @@ class Downloader {
 
     _createCsvSaveCallBack(filePrefix) {
         return async tag => {
-            log.info('Persisting CSV callback after a day fetched');
+            log.info('Callback for persisting CSV data after a day was fetched called');
 
             const fileName = `${filePrefix}_${tag}.tar.gz`;
             const tarPath = await this.store.tarStore(fileName);
