@@ -31,7 +31,7 @@ class Downloader {
 
     async _fetchPlCsv() {
         const baseUrl = settings.SERVER_URL;
-        const csvPath = settings.PL_CSV_URL; 
+        const csvPath = settings.PL_CSV_PATH; 
         const hours = settings.PL_CSV_FETCH_HOURS;
         const step = settings.PL_CSV_STEP;
         const errLimit = settings.PL_CSV_ERROR_LIMIT;
@@ -51,10 +51,10 @@ class Downloader {
 
     async _fetchEuLongCsv() {
         const baseUrl = settings.SERVER_URL;
-        const csvPath = settings.EUROPE_LONG_CSV_URL; 
-        const hours = settings.EUROPE_LONG_CSV_FETCH_HOURS;
-        const step = settings.EUROPE_LONG_CSV_STEP;
-        const errLimit = settings.EUROPE_LONG_ERROR_LIMIT;
+        const csvPath = settings.EU_LONG_CSV_PATH; 
+        const hours = settings.EU_LONG_CSV_FETCH_HOURS;
+        const step = settings.EU_LONG_CSV_STEP;
+        const errLimit = settings.EU_LONG_ERROR_LIMIT;
 
         log.info(`Fetching last ${hours} Europe Long CSV from: ` + 
             `${baseUrl}, path: ${csvPath}. Step used: ${step} ` +
@@ -71,7 +71,7 @@ class Downloader {
 
     async _fetchPlCache() {
         const baseUrl = settings.SERVER_URL;
-        const cachePath = settings.PL_CACHE_URL;
+        const cachePath = settings.PL_CACHE_PATH;
         
         log.info(`Fetching PL Cache from Long CSV from: ` + 
             `${baseUrl}, path: ${cachePath}.`);
