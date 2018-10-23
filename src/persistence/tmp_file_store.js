@@ -105,8 +105,10 @@ class TmpFileStore {
                     level: ZlibConstants.Z_DEFAULT_COMPRESSION
                 }
             }, err => {
-                if (err) reject(err);
-
+                if (err) {
+                    reject(err);
+                    return;
+                }
                 log.info('Tar saved: ' + filePath);
                 resolve(filePath);
             })

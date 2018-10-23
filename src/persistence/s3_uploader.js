@@ -29,9 +29,10 @@ class S3Uploader {
             s3.upload(params, (err, data) => {
                 if (err) {
                     reject(err);
+                    return;
                 }
 
-                log.info(`Succesfuly uploaded ${fileName} to ${data.Location}`);
+                log.info(`Successfully uploaded ${fileName} to ${data.Location}`);
 
                 resolve(data.Location);
             });
