@@ -83,7 +83,7 @@ class Downloader {
 
         log.info('PL Cache download completed');
 
-        const tarfile = awaitthis.store.tarStore('cache.tar.gz');
+        const tarfile = await this.store.tarStore('cache.tar.gz');
         await this._uploadToS3AndRm(tarfile);
 
         await this.store.clearStore();
