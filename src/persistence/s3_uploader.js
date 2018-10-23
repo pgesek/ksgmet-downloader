@@ -7,8 +7,9 @@ const s3 = new AWS.S3();
 
 class S3Uploader {
 
-    constructor(bucketName) {
+    constructor(bucketName, prefix) {
         this.bucketName = bucketName;
+        this.prefix = prefix;
     }
 
     uploadFile(filePath) {
@@ -20,7 +21,7 @@ class S3Uploader {
         const params = {
             Body: fileStream,
             Bucket: this.bucketName,
-            Key: fileName,
+            Key: `${this.prefix}/${fileName}`,
             StorageClass: 'STANDARD_IA'
         };
 

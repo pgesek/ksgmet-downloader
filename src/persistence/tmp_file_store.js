@@ -1,19 +1,19 @@
+const del = require('del');
 const fs = require('fs');
 const log = require('../util/log.js');
 const mkdirRec = require('mkdir-recursive');
-const moment = require('moment-timezone');
 const os = require('os');
 const path = require('path');
 const targz = require('targz');
 const ZlibConstants = require('zlib').constants;
 
+const TEMP_PREFIX = 'ksgmet-downloader-';
+
 class TmpFileStore {
 
     constructor() {
-        this.ZONE = 'Europe/Warsaw';
-
         this.tmpDir = fs.mkdtempSync(path.join(
-            os.tmpdir(), 'ksgmet-downloader-'));
+            os.tmpdir(), TEMP_PREFIX));
 
         log.info('Store constructed. Tmp directory: ' +
             this.tmpDir);
@@ -64,35 +64,36 @@ class TmpFileStore {
 
             if (isString) {
                 dest.write(body, err => {
-                    if (err) reject(err);
+                    if (err) {
+                        dest.end();
+                        reject(err);
+                    }
+                    
+                    dest.end();
                     resolve(destFilePath);
                 });
             } else {
                 body.pipe(dest);
                 body.on('error', err => {
+                    dest.end();
                     reject(err);
                 });
             }   
 
             dest.on('finish', () => {
                 log.debug(`Saved ${name} to ${subPath}`);
+                dest.end();
                 resolve(destFilePath);
             });
             dest.on('error', err => {
+                dest.end();
                 reject(err);
             });
         });
     }
 
-    tarStore() {
+    tarStore(fileName) {
         return new Promise((resolve, reject) => {
-            const dt = new Date();
-            
-            const format = 'YYYY_MM_DD_hh_mm_ss';
-            const dateString = moment(dt, format).tz(this.ZONE)
-                .format(format);
-        
-            const fileName = 'ksgmet_' + dateString + '.tar.gz';
             const filePath = path.join(os.tmpdir(), fileName);
 
             log.info('Creating tar: ' + filePath);
@@ -109,6 +110,22 @@ class TmpFileStore {
                 log.info('Tar saved: ' + filePath);
                 resolve(filePath);
             })
+        });
+    }
+
+    clearStore() {
+        return new Promise((resolve, reject) => {
+            log.info('Clearing store: ' + this.tmpDir);
+            del([this.tmpDir], { force: true }).then(() => {
+                log.info('Store cleared');
+
+                this.tmpDir = fs.mkdtempSync(path.join(
+                    os.tmpdir(), TEMP_PREFIX));
+
+                log.debug('Recreating temp dir: ' + this.tmpDir);
+
+                resolve();
+            }).catch(err => reject(err));
         });
     }
 }

@@ -21,16 +21,19 @@ describe('CSV Fetcher', () => {
             },
             ensureDirStructure() {
                 return new Promise(resolve => resolve());
+            },
+            callback() {
             }
         };
         spyOn(store, 'save').and.callThrough();
         spyOn(store, 'saveString').and.callThrough();
         spyOn(store, 'ensureDirStructure').and.callThrough();
+        spyOn(store, 'callback');
 
         HttpMocks.mockCsvPoland2018(mockServer);
 
         const csvFetcher = new CsvFetcher(baseUrl, csvPath, store, 2);
-        await csvFetcher.fetchDirectory();
+        await csvFetcher.fetchDirectory(store.callback);
 
         expect(store.save).toHaveBeenCalledWith('/CSV/poland/2018/10/13/11/', 'testfile.csv', jasmine.anything());
         expect(store.save).toHaveBeenCalledWith('/CSV/poland/2018/10/13/12/', 'ACM_CONVECTIVE_PERCIP.csv', jasmine.anything());
@@ -41,5 +44,7 @@ describe('CSV Fetcher', () => {
         expect(store.save).toHaveBeenCalledWith('/CSV/poland/2018/', 'current.nfo', jasmine.anything());
         expect(store.ensureDirStructure).toHaveBeenCalledWith('/CSV/poland/2018/10/13/11/');
         expect(store.ensureDirStructure).toHaveBeenCalledWith('/CSV/poland/2018/10/13/12/');
+        expect(store.callback).toHaveBeenCalledWith('2018_10_13');
+        expect(store.callback).toHaveBeenCalledTimes(1);
     });
 });

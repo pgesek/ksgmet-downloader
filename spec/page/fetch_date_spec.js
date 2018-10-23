@@ -64,4 +64,16 @@ describe('fetch date', () => {
         const date = new FetchDate(2018, 3, 1, 0);
         expect(date.toPath()).toEqual('2018/3/1/0/')
     });
+
+    it('should create tag without hour', () => {
+        const date = new FetchDate(2018, 12, 4, 16);
+        expect(date.toTagNoHour()).toEqual('2018_12_4');
+    });
+
+    it('should check if decrement decreases day', () => {
+        const date = new FetchDate(2018, 12, 1, 4);
+        expect(date.decrementWillChangeDay(3)).toBeFalsy();
+        expect(date.decrementWillChangeDay(4)).toBeFalsy();
+        expect(date.decrementWillChangeDay(5)).toBeTruthy();
+    });
 });

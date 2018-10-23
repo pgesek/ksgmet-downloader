@@ -4,6 +4,10 @@ const path = require('path');
 const fs = require('fs');
 
 describe('tmp file store', () => {
+    beforeEach(() => {
+        jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
+    });
+
     it('should create a temp file', done => {
         const store = new TmpFileStore();
         const body = {
@@ -21,7 +25,7 @@ describe('tmp file store', () => {
                     
                     expect(data).toEqual("test content");
                     
-                    store.tarStore().then(tarPath => {
+                    store.tarStore('ksgmet-test.tar.gz').then(tarPath => {
                         expect(fs.existsSync(tarPath)).toBeTruthy();
                         done();
                     });
@@ -39,5 +43,18 @@ describe('tmp file store', () => {
 
         dirPath = await store.ensureDirStructure(path);
         expect(fs.existsSync(dirPath)).toBeTruthy();
+    });
+
+    it('should clear store', async () => {
+
+        const path = '3/2/11';
+        const store = new TmpFileStore();
+
+        const dirPath = await store.ensureDirStructure(path);
+        const filePath = await store.saveString('3/2/11/', 'test.txt', 'Test Content');
+        
+        await store.clearStore();
+        expect(fs.existsSync(dirPath)).toBeFalsy();
+        expect(fs.existsSync(filePath)).toBeFalsy();
     });
 });

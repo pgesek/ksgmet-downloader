@@ -23,7 +23,7 @@ class CsvFetcher extends Fetcher {
         this.errorLimit = errorLimit;
     }
 
-    async fetchDirectory() {
+    async fetchDirectory(dayCompleteCallback) {
         log.debug('Fetching CSV directory: ' + this.dirUrl);
 
         const fetchDate = await this.latestDateRetriever.retrieveLatestDate();
@@ -51,12 +51,20 @@ class CsvFetcher extends Fetcher {
                 await this._fetchListingFiles(listing);
 
                 fetchCount += this.decrementStep;
+                
+                if ((fetchDate.decrementWillChangeDay(this.decrementStep) || 
+                     fetchCount >= this.hoursToFetch) 
+                     && dayCompleteCallback) {
+                    
+                    await dayCompleteCallback(fetchDate.toTagNoHour());
+                }
+
                 fetchDate.decrement(this.decrementStep);
             } else {
-                log.warn('Skipping: ' + fetchDate.toPath());
+                log.warn('404 error, skipping: ' + fetchDate.toPath());
                 
                 notFoundCount++;
-                log.warn('This is error number ' + notFoundCount);
+                log.warn('This is 404 error number ' + notFoundCount);
 
                 if (notFoundCount > this.errorLimit) {
                     throw new Error('Got 404 error for listings too mayn times');

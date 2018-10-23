@@ -38,6 +38,10 @@ class FetchDate {
         return path;
     }
 
+    toTagNoHour() {
+        return `${this.year}_${this.month}_${this.day}`;    
+    }
+
     isComplete() {
         return this.isDef(this.year) && this.isDef(this.month) && 
             this.isDef(this.day) && this.isDef(this.hour);
@@ -56,6 +60,26 @@ class FetchDate {
         this.month = dt.getMonth() + 1;
         this.day = dt.getDate();
         this.hour = dt.getHours();
+    }
+
+    decrementWillChangeDay(decrementStep) {
+        const dt = new Date(this.year, this.month - 1, this.day, 
+            this.hour);
+        dt.setHours(dt.getHours() - decrementStep);
+
+        return dt.getDate() != this.getDay();
+    }
+
+    getHour() {
+        return this.hour;
+    }
+
+    getDay() {
+        return this.day;
+    }
+
+    getMonth() {
+        return this.month;
     }
 
     getYear() {
