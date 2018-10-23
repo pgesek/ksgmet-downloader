@@ -101,7 +101,7 @@ class TmpFileStore {
                 src: this.tmpDir,
                 dest: filePath,
                 gz: {
-                    level: ZlibConstants.Z_BEST_COMPRESSION 
+                    level: ZlibConstants.Z_DEFAULT_COMPRESSION
                 }
             }, err => {
                 if (err) reject(err);
