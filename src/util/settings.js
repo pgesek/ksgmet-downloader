@@ -7,7 +7,7 @@ function getSetting(varName, defaultVal, isBoolean) {
         setting = defaultVal;
     }
 
-    if (isBoolean) {
+    if (isBoolean && typeof setting === 'string') {
         setting = setting !== 'false' && setting !== '0';
     }
 
