@@ -31,6 +31,7 @@ class CsvFetcher extends Fetcher {
         log.info('Latest data date resolved to: ' +
             fetchDate.toPath());
 
+        let lastSuccessfulTagNotSaved = null;
         let fetchCount = 0;
         let notFoundCount = 0;
         while(fetchCount < this.hoursToFetch) {
@@ -38,6 +39,8 @@ class CsvFetcher extends Fetcher {
             const listing = await this._fetchListing(fetchDate);
             
             if (listing) {
+                lastSuccessfulTagNotSaved = fetchDate.toTagNoHour();
+
                 notFoundCount = 0;
 
                 log.debug('Ensuring directory structure in store for: ' + listing.getPath());
@@ -55,8 +58,9 @@ class CsvFetcher extends Fetcher {
                 if ((fetchDate.decrementWillChangeDay(this.decrementStep) || 
                      fetchCount >= this.hoursToFetch) 
                      && dayCompleteCallback) {
-                    
-                    await dayCompleteCallback(fetchDate.toTagNoHour());
+                    await dayCompleteCallback(lastSuccessfulTagNotSaved);
+
+                    lastSuccessfulTagNotSaved = null;
                 }
 
                 fetchDate.decrement(this.decrementStep);
@@ -67,7 +71,13 @@ class CsvFetcher extends Fetcher {
                 log.warn('This is 404 error number ' + notFoundCount);
 
                 if (notFoundCount > this.errorLimit) {
-                    throw new Error('Got 404 error for listings too mayn times');
+                   log.warn('Got 404 error for listings too many times');
+
+                   if (dayCompleteCallback && !lastSuccessfulTagNotSaved) {
+                      await dayCompleteCallback(lastSuccessfulTagNotSaved);
+                   }
+
+                   return;
                 }
 
                 log.warn('Trying one hour lower');
