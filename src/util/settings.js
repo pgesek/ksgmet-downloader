@@ -1,11 +1,16 @@
 require('dotenv').load();
 const AWS = require('aws-sdk');
 
-function getSetting(varName, defaultVal) {
+function getSetting(varName, defaultVal, isBoolean) {
     let setting = process.env[varName];
     if (setting === undefined && defaultVal !== undefined) {
         setting = defaultVal;
     }
+
+    if (isBoolean) {
+        setting = setting !== 'false' && setting !== '0';
+    }
+
     return setting;
 }
 
@@ -26,8 +31,8 @@ const settings = Object.freeze({
 
     LOG_LEVEL: 'info',
 
-    UPLOAD_TO_S3: getSetting('UPLOAD_TO_S3', false),
-    LOAD_AWS_CONFIG_FILE: getSetting('LOAD_AWS_CONFIG_FILE', false),
+    UPLOAD_TO_S3: getSetting('UPLOAD_TO_S3', false, true),
+    LOAD_AWS_CONFIG_FILE: getSetting('LOAD_AWS_CONFIG_FILE', false, true),
     S3_BUCKET_NAME: getSetting('S3_BUCKET_NAME')
 });
 
