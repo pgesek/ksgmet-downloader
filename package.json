@@ -1,6 +1,6 @@
 {
   "name": "ksgmet-downloader",
-  "version": "1.0.0-SNAPSHOT",
+  "version": "1.0.1-SNAPSHOT",
   "description": "Downloader function for KSG-Met",
   "main": "src/index.js",
   "scripts": {
